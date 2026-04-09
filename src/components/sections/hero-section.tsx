@@ -1,5 +1,7 @@
-import { bouquetDetails } from "@/content/landing-page";
+"use client";
+
 import { buildBouquetPath } from "@/lib/site-paths";
+import { useLanguage } from "@/components/i18n/language-provider";
 import { ButtonLink } from "@/components/ui/button-link";
 import { BouquetShowcase } from "./bouquet-showcase";
 import styles from "./hero-section.module.css";
@@ -13,6 +15,7 @@ export function HeroSection({
   contained = true,
   visualMode = "default"
 }: HeroSectionProps) {
+  const { translations, createLocalizedPath } = useLanguage();
   const wrapperClassName = `${styles.wrapper} ${
     visualMode === "mobile-only" ? styles.singleColumnDesktop : ""
   }`;
@@ -20,18 +23,18 @@ export function HeroSection({
   const content = (
     <div className={wrapperClassName}>
       <div className={styles.copy}>
-        <span className="eyebrow">Personlige blomster med omtanke</span>
-        <h1>Byg din egen blomsterbuket</h1>
-        <p>Vælg bund, blomster og kort, og sammensæt en personlig buket på få minutter.</p>
+        <span className="eyebrow">{translations.hero.eyebrow}</span>
+        <h1>{translations.hero.title}</h1>
+        <p>{translations.hero.description}</p>
 
         <div className={styles.actions}>
-          <ButtonLink href={buildBouquetPath} size="large">
-            Byg din egen buket
+          <ButtonLink href={createLocalizedPath(buildBouquetPath)} size="large">
+            {translations.hero.cta}
           </ButtonLink>
         </div>
 
-        <ul className={styles.metrics} aria-label="Vigtige fordele">
-          {bouquetDetails.map((detail) => (
+        <ul className={styles.metrics} aria-label={translations.hero.metricsLabel}>
+          {translations.hero.metrics.map((detail) => (
             <li key={detail.label}>
               <strong>{detail.value}</strong>
               <span>{detail.label}</span>

@@ -1,15 +1,22 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { useLanguage } from "@/components/i18n/language-provider";
 import {
   createBouquetDraftQueryString,
   createRandomBouquetDraft,
-  defaultBouquetCardMessage,
-  defaultBouquetCardTitle,
   parseBouquetDraftFromUrlSearchParams
 } from "@/lib/bouquet-draft";
-import { buildBouquetPath, createPathWithQuery } from "@/lib/site-paths";
+import {
+  getDefaultBouquetCardMessage,
+  getDefaultBouquetCardTitle
+} from "@/lib/i18n";
+import {
+  buildBouquetPath,
+  createLocalizedPath,
+  createLocalizedQueryString
+} from "@/lib/site-paths";
 import type { BouquetAsset, BouquetDraft } from "@/types/bouquet";
 import { OpenBouquetExperience } from "./open-bouquet-experience";
 
@@ -32,7 +39,8 @@ function resolveFlowers(flowers: BouquetAsset[], flowerIds: string[]) {
 
 function resolveDraft(
   draft: Partial<BouquetDraft>,
-  fallbackDraft: BouquetDraft
+  fallbackDraft: BouquetDraft,
+  language: Parameters<typeof getDefaultBouquetCardTitle>[0]
 ) {
   const hasSelection =
     Boolean(draft.backgroundIds?.length) || Boolean(draft.flowerIds?.length);
@@ -44,8 +52,8 @@ function resolveDraft(
   return {
     backgroundIds: draft.backgroundIds ?? [],
     flowerIds: draft.flowerIds ?? [],
-    cardTitle: draft.cardTitle?.trim() || defaultBouquetCardTitle,
-    cardMessage: draft.cardMessage?.trim() || defaultBouquetCardMessage
+    cardTitle: draft.cardTitle?.trim() || getDefaultBouquetCardTitle(language),
+    cardMessage: draft.cardMessage?.trim() || getDefaultBouquetCardMessage(language)
   };
 }
 
@@ -53,12 +61,16 @@ function OpenBouquetPageContent({
   backgrounds,
   flowers
 }: OpenBouquetPageProps) {
+  const { language, createLocalizedPath } = useLanguage();
   const searchParams = useSearchParams();
-  const [fallbackDraft] = useState(() => createRandomBouquetDraft(backgrounds, flowers));
+  const fallbackDraft = useMemo(
+    () => createRandomBouquetDraft(backgrounds, flowers, language),
+    [backgrounds, flowers, language]
+  );
   const initialDraft = parseBouquetDraftFromUrlSearchParams(searchParams);
   const draft = useMemo(
-    () => resolveDraft(initialDraft, fallbackDraft),
-    [fallbackDraft, initialDraft]
+    () => resolveDraft(initialDraft, fallbackDraft, language),
+    [fallbackDraft, initialDraft, language]
   );
   const selectedBackgrounds = useMemo(
     () => resolveBackgrounds(backgrounds, draft.backgroundIds),
@@ -69,13 +81,17 @@ function OpenBouquetPageContent({
     [draft.flowerIds, flowers]
   );
   const currentDraftQueryString = createBouquetDraftQueryString(draft);
-  const builderPath = createPathWithQuery(
+  const builderPath = createLocalizedPath(
     buildBouquetPath,
     currentDraftQueryString
   );
 
   useEffect(() => {
-    const nextSearch = currentDraftQueryString ? `?${currentDraftQueryString}` : "";
+    const localizedQueryString = createLocalizedQueryString(
+      currentDraftQueryString,
+      language
+    );
+    const nextSearch = localizedQueryString ? `?${localizedQueryString}` : "";
 
     if (window.location.search === nextSearch) {
       return;
@@ -86,7 +102,7 @@ function OpenBouquetPageContent({
       "",
       `${window.location.pathname}${nextSearch}${window.location.hash}`
     );
-  }, [currentDraftQueryString]);
+  }, [currentDraftQueryString, language]);
 
   return (
     <OpenBouquetExperience
@@ -103,15 +119,17 @@ export function OpenBouquetPage({
   backgrounds,
   flowers
 }: OpenBouquetPageProps) {
+  const { language } = useLanguage();
+
   return (
     <Suspense
       fallback={
         <OpenBouquetExperience
           backgrounds={backgrounds}
           flowers={flowers.slice(0, 9)}
-          cardTitle={defaultBouquetCardTitle}
-          cardMessage={defaultBouquetCardMessage}
-          builderPath={buildBouquetPath}
+          cardTitle={getDefaultBouquetCardTitle(language)}
+          cardMessage={getDefaultBouquetCardMessage(language)}
+          builderPath={createLocalizedPath(buildBouquetPath, language)}
         />
       }
     >

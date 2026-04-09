@@ -1,13 +1,13 @@
 import type { BouquetAsset, BouquetDraft } from "@/types/bouquet";
+import {
+  defaultLanguage,
+  getDefaultBouquetCardMessage,
+  getDefaultBouquetCardTitle,
+  getRandomBouquetCardMessage,
+  type LanguageCode
+} from "@/lib/i18n";
 
-const DEFAULT_CARD_TITLE = "Til dig";
 const BASE64_PREFIX = "b64:";
-const CARD_MESSAGES = [
-  "Jeg har plukket denne buket til dig.",
-  "En lille buket til en, jeg holder af.",
-  "Håber blomsterne gør din dag lidt finere.",
-  "Denne buket er valgt med varme tanker."
-];
 
 function randomCount(min: number, max: number, random: () => number) {
   return Math.floor(random() * (max - min + 1)) + min;
@@ -49,27 +49,27 @@ function pickRepeatedIds(
 export function createRandomBouquetDraft(
   backgrounds: BouquetAsset[],
   flowers: BouquetAsset[],
+  language: LanguageCode = defaultLanguage,
   random: () => number = Math.random
 ): BouquetDraft {
   if (backgrounds.length === 0 || flowers.length === 0) {
     return {
       backgroundIds: [],
       flowerIds: [],
-      cardTitle: DEFAULT_CARD_TITLE,
-      cardMessage: CARD_MESSAGES[0]
+      cardTitle: getDefaultBouquetCardTitle(language),
+      cardMessage: getDefaultBouquetCardMessage(language)
     };
   }
 
   const backgroundCount =
     backgrounds.length === 1 ? 1 : randomCount(1, Math.min(2, backgrounds.length), random);
   const flowerCount = randomCount(6, 9, random);
-  const cardMessage =
-    CARD_MESSAGES[Math.floor(random() * CARD_MESSAGES.length)] ?? CARD_MESSAGES[0];
+  const cardMessage = getRandomBouquetCardMessage(language, random);
 
   return {
     backgroundIds: pickUniqueIds(backgrounds, backgroundCount, random),
     flowerIds: pickRepeatedIds(flowers, flowerCount, random),
-    cardTitle: DEFAULT_CARD_TITLE,
+    cardTitle: getDefaultBouquetCardTitle(language),
     cardMessage
   };
 }
@@ -178,5 +178,5 @@ export function createBouquetDraftQueryString(draft: BouquetDraft) {
   return params.toString();
 }
 
-export const defaultBouquetCardTitle = DEFAULT_CARD_TITLE;
-export const defaultBouquetCardMessage = CARD_MESSAGES[0];
+export const defaultBouquetCardTitle = getDefaultBouquetCardTitle(defaultLanguage);
+export const defaultBouquetCardMessage = getDefaultBouquetCardMessage(defaultLanguage);

@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import type { CSSProperties } from "react";
+import { getDefaultBouquetCardTitle } from "@/lib/i18n";
+import { useLanguage } from "@/components/i18n/language-provider";
 import type { BouquetAsset } from "@/types/bouquet";
 import styles from "./bouquet-preview.module.css";
 
@@ -126,12 +130,16 @@ export function BouquetPreview({
   showHeader = true,
   showMessagePreview = true
 }: BouquetPreviewProps) {
+  const { language, translations, localizeLabel } = useLanguage();
+  const safeCardTitle = cardTitle.trim() || getDefaultBouquetCardTitle(language);
+  const safeCardMessage = cardMessage.trim() || translations.preview.messagePlaceholder;
+
   return (
     <aside className={styles.panel}>
       {showHeader ? (
         <div className={styles.panelHeader}>
-          <span className={styles.kicker}>Forhåndsvisning</span>
-          <strong>{isValid ? "Buketten er klar" : "Din buket"}</strong>
+          <span className={styles.kicker}>{translations.preview.kicker}</span>
+          <strong>{isValid ? translations.preview.ready : translations.preview.current}</strong>
         </div>
       ) : null}
 
@@ -139,9 +147,7 @@ export function BouquetPreview({
         <div className={styles.canvasGlow} />
         <div className={styles.canvasStage}>
           {backgrounds.length === 0 ? (
-            <div className={styles.emptyState}>
-              Vælg mindst 1 bund for at se buketten.
-            </div>
+            <div className={styles.emptyState}>{translations.preview.emptyState}</div>
           ) : null}
 
           {backgrounds.map((background, index) => (
@@ -152,7 +158,7 @@ export function BouquetPreview({
             >
               <Image
                 src={background.src}
-                alt={background.label}
+                alt={localizeLabel(background.label)}
                 fill
                 sizes="(max-width: 960px) 80vw, 40vw"
                 className={styles.assetImage}
@@ -169,7 +175,7 @@ export function BouquetPreview({
             >
               <Image
                 src={flower.src}
-                alt={flower.label}
+                alt={localizeLabel(flower.label)}
                 fill
                 sizes="(max-width: 960px) 24vw, 12vw"
                 className={styles.assetImage}
@@ -181,11 +187,11 @@ export function BouquetPreview({
 
       <div className={styles.statusGrid}>
         <div className={styles.statusCard}>
-          <span>Bunde</span>
+          <span>{translations.builder.backgrounds}</span>
           <strong>{backgrounds.length}</strong>
         </div>
         <div className={styles.statusCard}>
-          <span>Blomster</span>
+          <span>{translations.builder.flowers}</span>
           <strong>{totalFlowers} / 9</strong>
         </div>
       </div>
@@ -193,14 +199,18 @@ export function BouquetPreview({
       {showMessagePreview ? (
         <div className={styles.messagePreview}>
           <div className={styles.messageHeader}>
-            <span className={styles.messageKicker}>Kort</span>
-            <span className={styles.messageBadge}>Personlig hilsen</span>
+            <span className={styles.messageKicker}>{translations.preview.card}</span>
+            <span className={styles.messageBadge}>
+              {translations.preview.personalMessage}
+            </span>
           </div>
           <div className={styles.letter}>
             <div className={styles.letterPaper}>
-              <span className={styles.letterTitle}>{cardTitle.trim() || "Til dig"}</span>
-              <p>{cardMessage.trim() || "Skriv en lille hilsen til kortet."}</p>
-              <span className={styles.letterSignature}>Med varme tanker</span>
+              <span className={styles.letterTitle}>{safeCardTitle}</span>
+              <p>{safeCardMessage}</p>
+              <span className={styles.letterSignature}>
+                {translations.preview.signature}
+              </span>
             </div>
           </div>
         </div>

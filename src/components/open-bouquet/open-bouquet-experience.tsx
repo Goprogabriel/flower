@@ -5,6 +5,12 @@ import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { useLanguage } from "@/components/i18n/language-provider";
+import {
+  getDefaultBouquetCardMessage,
+  getDefaultBouquetCardTitle
+} from "@/lib/i18n";
 import type { BouquetAsset } from "@/types/bouquet";
 import styles from "./open-bouquet-experience.module.css";
 
@@ -133,6 +139,7 @@ export function OpenBouquetExperience({
   cardMessage,
   builderPath
 }: OpenBouquetExperienceProps) {
+  const { language, translations, localizeLabel } = useLanguage();
   const prefersReducedMotion = useReducedMotion();
   const [isCardOpen, setIsCardOpen] = useState(prefersReducedMotion);
   const [showMessage, setShowMessage] = useState(prefersReducedMotion);
@@ -161,8 +168,8 @@ export function OpenBouquetExperience({
     };
   }, [prefersReducedMotion]);
 
-  const safeTitle = cardTitle.trim() || "Til dig";
-  const safeMessage = cardMessage.trim() || "En lille buket til en, jeg holder af.";
+  const safeTitle = cardTitle.trim() || getDefaultBouquetCardTitle(language);
+  const safeMessage = cardMessage.trim() || getDefaultBouquetCardMessage(language);
 
   return (
     <section className={styles.section}>
@@ -209,10 +216,14 @@ export function OpenBouquetExperience({
                       exit={{ opacity: 0, y: 8 }}
                       transition={{ duration: prefersReducedMotion ? 0 : 0.62, ease: "easeOut" }}
                     >
-                      <span className={styles.letterKicker}>Til modtageren</span>
+                      <span className={styles.letterKicker}>
+                        {translations.openBouquet.recipientKicker}
+                      </span>
                       <strong>{safeTitle}</strong>
                       <p>{safeMessage}</p>
-                      <span className={styles.letterSignature}>Med varme tanker</span>
+                      <span className={styles.letterSignature}>
+                        {translations.preview.signature}
+                      </span>
                     </motion.div>
                   ) : null}
                 </AnimatePresence>
@@ -276,7 +287,7 @@ export function OpenBouquetExperience({
                       >
                         <Image
                           src={background.src}
-                          alt={background.label}
+                          alt={localizeLabel(background.label)}
                           fill
                           sizes="(max-width: 900px) 70vw, 30vw"
                           className={styles.assetImage}
@@ -300,7 +311,7 @@ export function OpenBouquetExperience({
                       >
                         <Image
                           src={flower.src}
-                          alt={flower.label}
+                          alt={localizeLabel(flower.label)}
                           fill
                           sizes="(max-width: 900px) 22vw, 10vw"
                           className={styles.assetImage}
@@ -321,9 +332,12 @@ export function OpenBouquetExperience({
         animate={{ opacity: showBouquet ? 1 : 0, y: showBouquet ? 0 : 16 }}
         transition={{ duration: prefersReducedMotion ? 0 : 0.5, ease: "easeOut" }}
       >
-        <Link href={builderPath} className={styles.orderButton}>
-          Bestil
-        </Link>
+        <div className={styles.bottomActionInner}>
+          <Link href={builderPath} className={styles.orderButton}>
+            {translations.openBouquet.order}
+          </Link>
+          <LanguageSwitcher />
+        </div>
       </motion.div>
     </section>
   );

@@ -2,15 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createBouquetDraftQueryString } from "@/lib/bouquet-draft";
+import { useLanguage } from "@/components/i18n/language-provider";
 import {
-  createBouquetDraftQueryString,
-  defaultBouquetCardMessage,
-  defaultBouquetCardTitle
-} from "@/lib/bouquet-draft";
+  getDefaultBouquetCardMessage,
+  getDefaultBouquetCardTitle,
+  replaceCount
+} from "@/lib/i18n";
 import {
   createAbsoluteShareUrl,
-  createPathWithQuery,
+  createLocalizedQueryString,
   openBouquetPath
 } from "@/lib/site-paths";
 import type { BouquetAsset } from "@/types/bouquet";
@@ -115,11 +117,13 @@ export function BouquetBuilder({
   initialCardTitle,
   initialCardMessage
 }: BouquetBuilderProps) {
+  const { language, translations, createLocalizedPath, localizeLabel } =
+    useLanguage();
   const [cardTitle, setCardTitle] = useState(
-    initialCardTitle?.trim() || defaultBouquetCardTitle
+    initialCardTitle?.trim() || getDefaultBouquetCardTitle(language)
   );
   const [cardMessage, setCardMessage] = useState(
-    initialCardMessage?.trim() || defaultBouquetCardMessage
+    initialCardMessage?.trim() || getDefaultBouquetCardMessage(language)
   );
   const [selectedBackgroundIds, setSelectedBackgroundIds] = useState(
     createInitialBackgroundSelectionFromIds(backgrounds, initialBackgroundIds)
@@ -128,6 +132,7 @@ export function BouquetBuilder({
     createInitialFlowerSelectionFromIds(flowers, initialFlowerIds)
   );
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const previousLanguageRef = useRef(language);
 
   const selectedBackgrounds = backgrounds.filter((background) =>
     selectedBackgroundIds.includes(background.id)
@@ -140,20 +145,41 @@ export function BouquetBuilder({
     cardTitle,
     cardMessage
   });
-  const digitalBouquetPath = createPathWithQuery(
+  const digitalBouquetPath = createLocalizedPath(
     openBouquetPath,
     currentDraftQueryString
   );
 
   const backgroundError =
-    selectedBackgrounds.length === 0 ? "Du skal vælge mindst 1 bund." : null;
+    selectedBackgrounds.length === 0 ? translations.builder.backgroundError : null;
   const flowerError =
     totalFlowers < MIN_FLOWERS
-      ? `Du skal vælge mindst ${MIN_FLOWERS} blomster.`
+      ? replaceCount(translations.builder.flowerErrorMin, MIN_FLOWERS)
       : totalFlowers > MAX_FLOWERS
-        ? `Du kan højst vælge ${MAX_FLOWERS} blomster.`
+        ? replaceCount(translations.builder.flowerErrorMax, MAX_FLOWERS)
         : null;
   const isValid = !backgroundError && !flowerError;
+
+  useEffect(() => {
+    const previousLanguage = previousLanguageRef.current;
+
+    if (previousLanguage === language) {
+      return;
+    }
+
+    const previousDefaultTitle = getDefaultBouquetCardTitle(previousLanguage);
+    const previousDefaultMessage = getDefaultBouquetCardMessage(previousLanguage);
+
+    if (cardTitle.trim() === previousDefaultTitle) {
+      setCardTitle(getDefaultBouquetCardTitle(language));
+    }
+
+    if (cardMessage.trim() === previousDefaultMessage) {
+      setCardMessage(getDefaultBouquetCardMessage(language));
+    }
+
+    previousLanguageRef.current = language;
+  }, [cardMessage, cardTitle, language]);
 
   useEffect(() => {
     const selectedFlowerIds = getSelectedFlowerIds(flowers, flowerSelection);
@@ -163,7 +189,8 @@ export function BouquetBuilder({
       cardTitle,
       cardMessage
     });
-    const nextSearch = queryString ? `?${queryString}` : "";
+    const localizedQueryString = createLocalizedQueryString(queryString, language);
+    const nextSearch = localizedQueryString ? `?${localizedQueryString}` : "";
 
     if (window.location.search === nextSearch) {
       return;
@@ -175,7 +202,14 @@ export function BouquetBuilder({
       "",
       `${window.location.pathname}${nextSearch}${window.location.hash}`
     );
-  }, [cardMessage, cardTitle, flowerSelection, flowers, selectedBackgroundIds]);
+  }, [
+    cardMessage,
+    cardTitle,
+    flowerSelection,
+    flowers,
+    language,
+    selectedBackgroundIds
+  ]);
 
   useEffect(() => {
     if (copyState === "idle") {
@@ -242,15 +276,13 @@ export function BouquetBuilder({
             <section className={styles.card}>
               <div className={styles.cardHeader}>
                 <div>
-                  <span className={styles.step}>Trin 1</span>
-                  <h2>Vælg bund</h2>
+                  <span className={styles.step}>{`${translations.builder.step} 1`}</span>
+                  <h2>{translations.builder.backgroundTitle}</h2>
                 </div>
-                <strong>{selectedBackgrounds.length} valgt</strong>
+                <strong>{`${selectedBackgrounds.length} ${translations.builder.selected}`}</strong>
               </div>
 
-              <p className={styles.helper}>
-                Vælg den eller de grønne bunde, der skal samle buketten og give den fylde.
-              </p>
+              <p className={styles.helper}>{translations.builder.backgroundHelper}</p>
 
               <div className={styles.backgroundGrid}>
                 {backgrounds.map((background) => {
@@ -267,13 +299,13 @@ export function BouquetBuilder({
                       <div className={styles.backgroundThumb}>
                         <Image
                           src={background.src}
-                          alt={background.label}
+                          alt={localizeLabel(background.label)}
                           fill
                           sizes="(max-width: 720px) 44vw, 18vw"
                           className={styles.assetImage}
                         />
                       </div>
-                      <span>{background.label}</span>
+                      <span>{localizeLabel(background.label)}</span>
                     </button>
                   );
                 })}
@@ -285,16 +317,13 @@ export function BouquetBuilder({
             <section className={styles.card}>
               <div className={styles.cardHeader}>
                 <div>
-                  <span className={styles.step}>Trin 2</span>
-                  <h2>Vælg blomster</h2>
+                  <span className={styles.step}>{`${translations.builder.step} 2`}</span>
+                  <h2>{translations.builder.flowerTitle}</h2>
                 </div>
-                <strong>{totalFlowers} / 9 valgt</strong>
+                <strong>{`${totalFlowers} / 9 ${translations.builder.selected}`}</strong>
               </div>
 
-              <p className={styles.helper}>
-                Vælg mellem 6 og 9 blomster. Den samme blomst kan lægges i buketten
-                flere gange ved at trykke på plus.
-              </p>
+              <p className={styles.helper}>{translations.builder.flowerHelper}</p>
 
               <div className={styles.flowerGrid}>
                 {flowers.map((flower) => {
@@ -305,7 +334,7 @@ export function BouquetBuilder({
                       <div className={styles.flowerThumb}>
                         <Image
                           src={flower.src}
-                          alt={flower.label}
+                          alt={localizeLabel(flower.label)}
                           fill
                           sizes="(max-width: 720px) 40vw, 12vw"
                           className={styles.assetImage}
@@ -314,8 +343,12 @@ export function BouquetBuilder({
 
                       <div className={styles.flowerBody}>
                         <div className={styles.flowerMeta}>
-                          <strong>{flower.label}</strong>
-                          <span>{quantity === 0 ? "Ikke valgt endnu" : `${quantity} stk. valgt`}</span>
+                          <strong>{localizeLabel(flower.label)}</strong>
+                          <span>
+                            {quantity === 0
+                              ? translations.builder.notSelectedYet
+                              : `${quantity} ${translations.builder.quantitySelected}`}
+                          </span>
                         </div>
 
                         <div className={styles.quantityControls}>
@@ -324,7 +357,9 @@ export function BouquetBuilder({
                             className={styles.quantityButton}
                             onClick={() => updateFlowerQuantity(flower.id, -1)}
                             disabled={quantity === 0}
-                            aria-label={`Fjern en ${flower.label}`}
+                            aria-label={`${translations.builder.removeOne} ${localizeLabel(
+                              flower.label
+                            )}`}
                           >
                             -
                           </button>
@@ -334,7 +369,9 @@ export function BouquetBuilder({
                             className={styles.quantityButton}
                             onClick={() => updateFlowerQuantity(flower.id, 1)}
                             disabled={totalFlowers >= MAX_FLOWERS}
-                            aria-label={`Tilføj en ${flower.label}`}
+                            aria-label={`${translations.builder.addOne} ${localizeLabel(
+                              flower.label
+                            )}`}
                           >
                             +
                           </button>
@@ -351,34 +388,32 @@ export function BouquetBuilder({
             <section className={styles.card}>
               <div className={styles.cardHeader}>
                 <div>
-                  <span className={styles.step}>Trin 3</span>
-                  <h2>Tilføj et kort</h2>
+                  <span className={styles.step}>{`${translations.builder.step} 3`}</span>
+                  <h2>{translations.builder.cardTitle}</h2>
                 </div>
-                <strong>Klar til hilsen</strong>
+                <strong>{translations.builder.cardReady}</strong>
               </div>
 
-              <p className={styles.helper}>
-                Skriv en lille titel og en personlig tekst til den, der skal have buketten.
-              </p>
+              <p className={styles.helper}>{translations.builder.cardHelper}</p>
 
               <div className={styles.messageForm}>
                 <label className={styles.field}>
-                  <span className={styles.fieldLabel}>Titel</span>
+                  <span className={styles.fieldLabel}>{translations.builder.titleLabel}</span>
                   <input
                     type="text"
                     value={cardTitle}
                     onChange={(event) => setCardTitle(event.target.value)}
-                    placeholder="Til dig"
+                    placeholder={translations.builder.titlePlaceholder}
                     maxLength={40}
                   />
                 </label>
 
                 <label className={styles.field}>
-                  <span className={styles.fieldLabel}>Tekst</span>
+                  <span className={styles.fieldLabel}>{translations.builder.messageLabel}</span>
                   <textarea
                     value={cardMessage}
                     onChange={(event) => setCardMessage(event.target.value)}
-                    placeholder="Skriv en lille hilsen"
+                    placeholder={translations.builder.messagePlaceholder}
                     rows={4}
                     maxLength={180}
                   />
@@ -388,23 +423,27 @@ export function BouquetBuilder({
 
             <section className={styles.summaryCard} aria-live="polite">
               <div>
-                <span className={styles.step}>Trin 4</span>
-                <h2>{isValid ? "Din buket er klar" : "Du mangler et par valg"}</h2>
+                <span className={styles.step}>{`${translations.builder.step} 4`}</span>
+                <h2>
+                  {isValid
+                    ? translations.builder.summaryReady
+                    : translations.builder.summaryIncomplete}
+                </h2>
               </div>
 
               <p className={styles.helper}>
                 {isValid
-                  ? "Du har valgt mindst 1 bund og mellem 6 og 9 blomster."
-                  : "Færdiggør både bund og blomster, før buketten er klar."}
+                  ? translations.builder.summaryValid
+                  : translations.builder.summaryInvalid}
               </p>
 
               <div className={styles.summaryStats}>
                 <div>
-                  <span>Bunde</span>
+                  <span>{translations.builder.backgrounds}</span>
                   <strong>{selectedBackgrounds.length}</strong>
                 </div>
                 <div>
-                  <span>Blomster</span>
+                  <span>{translations.builder.flowers}</span>
                   <strong>{totalFlowers}</strong>
                 </div>
               </div>
@@ -414,14 +453,16 @@ export function BouquetBuilder({
                 className={`${styles.completeButton} ${isValid ? styles.completeButtonReady : ""}`}
                 disabled={!isValid}
               >
-                {isValid ? "Klar buket" : "Færdiggør valgene"}
+                {isValid
+                  ? translations.builder.completeReady
+                  : translations.builder.completeIncomplete}
               </button>
 
               <div className={styles.digitalBouquetCard}>
                 <div className={styles.digitalBouquetHeader}>
                   <div>
-                    <span className={styles.step}>Digital buket</span>
-                    <h3>Del kortet og buketten med animation</h3>
+                    <span className={styles.step}>{translations.builder.digitalKicker}</span>
+                    <h3>{translations.builder.digitalTitle}</h3>
                   </div>
                 </div>
 
@@ -438,7 +479,7 @@ export function BouquetBuilder({
                       }
                     }}
                   >
-                    Aabn digital buket
+                    {translations.builder.openDigital}
                   </Link>
 
                   <button
@@ -448,10 +489,10 @@ export function BouquetBuilder({
                     disabled={!isValid}
                   >
                     {copyState === "copied"
-                      ? "Link kopieret"
+                      ? translations.builder.linkCopied
                       : copyState === "error"
-                        ? "Kunne ikke kopiere"
-                      : "Kopier link"}
+                        ? translations.builder.linkCopyFailed
+                        : translations.builder.copyLink}
                   </button>
                 </div>
               </div>

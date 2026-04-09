@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BouquetPreview } from "@/components/builder/bouquet-preview";
 import { createBouquetDraftQueryString, createRandomBouquetDraft } from "@/lib/bouquet-draft";
-import { buildBouquetPath, createPathWithQuery } from "@/lib/site-paths";
+import { useLanguage } from "@/components/i18n/language-provider";
+import { buildBouquetPath } from "@/lib/site-paths";
 import type { BouquetAsset, BouquetDraft } from "@/types/bouquet";
 import styles from "./random-bouquet-showcase.module.css";
 
@@ -19,7 +20,18 @@ export function RandomBouquetShowcase({
   flowers,
   initialDraft
 }: RandomBouquetShowcaseProps) {
+  const { language, translations, createLocalizedPath } = useLanguage();
   const [draft, setDraft] = useState(initialDraft);
+
+  useEffect(() => {
+    const localizedDraft = createRandomBouquetDraft(backgrounds, flowers, language);
+
+    setDraft((currentDraft) => ({
+      ...currentDraft,
+      cardTitle: localizedDraft.cardTitle,
+      cardMessage: localizedDraft.cardMessage
+    }));
+  }, [backgrounds, flowers, language]);
 
   const selectedBackgrounds = backgrounds.filter((background) =>
     draft.backgroundIds.includes(background.id)
@@ -29,7 +41,7 @@ export function RandomBouquetShowcase({
     .filter((flower): flower is BouquetAsset => Boolean(flower));
 
   function regenerateDraft() {
-    setDraft(createRandomBouquetDraft(backgrounds, flowers));
+    setDraft(createRandomBouquetDraft(backgrounds, flowers, language));
   }
 
   return (
@@ -47,16 +59,16 @@ export function RandomBouquetShowcase({
 
       <div className={styles.actions}>
         <button type="button" className={styles.regenerateButton} onClick={regenerateDraft}>
-          Ny buket
+          {translations.randomShowcase.newBouquet}
         </button>
         <Link
-          href={createPathWithQuery(
+          href={createLocalizedPath(
             buildBouquetPath,
             createBouquetDraftQueryString(draft)
           )}
           className={styles.orderButton}
         >
-          Tilpas buketten
+          {translations.randomShowcase.customizeBouquet}
         </Link>
       </div>
     </div>

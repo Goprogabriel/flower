@@ -275,6 +275,12 @@
   margin-top: 1.5rem;
 }
 
+.bottomActionInner {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+}
+
 .orderButton {
   display: inline-flex;
   align-items: center;
@@ -349,6 +355,10 @@
 
   .bottomAction {
     margin-top: 1.1rem;
+  }
+
+  .bottomActionInner {
+    width: 100%;
   }
 
   .orderButton {
