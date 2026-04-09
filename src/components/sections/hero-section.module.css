@@ -18,21 +18,33 @@
   gap: 1.5rem;
 }
 
-.copy h1 {
+.title {
   margin: 0;
   max-width: 12ch;
   font-family: var(--font-heading);
   font-size: clamp(3.2rem, 7vw, 6.2rem);
   line-height: 0.93;
   letter-spacing: -0.055em;
+  text-wrap: balance;
 }
 
-.copy p {
+.localizedTitle {
+  max-width: 13.8ch;
+  font-size: clamp(2.9rem, 6vw, 5.3rem);
+  line-height: 0.96;
+}
+
+.description {
   margin: 0;
   max-width: 62ch;
   font-size: 1.06rem;
   line-height: 1.76;
   color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+.localizedDescription {
+  max-width: 58ch;
 }
 
 .actions {
@@ -75,7 +87,7 @@
   line-height: 1.45;
 }
 
-.singleColumnDesktop .copy p {
+.singleColumnDesktop .description {
   max-width: 34ch;
 }
 
@@ -89,8 +101,12 @@
     padding-top: 1.2rem;
   }
 
-  .copy h1 {
+  .title {
     max-width: 14ch;
+  }
+
+  .localizedTitle {
+    max-width: 15ch;
   }
 
   .mobileOnlyVisual {
@@ -105,9 +121,14 @@
     padding-top: 1.2rem;
   }
 
-  .copy h1 {
+  .title {
     max-width: 11ch;
     font-size: clamp(2.9rem, 15vw, 4.3rem);
+  }
+
+  .localizedTitle {
+    max-width: 12.5ch;
+    font-size: clamp(2.55rem, 12.5vw, 3.9rem);
   }
 
   .metrics {

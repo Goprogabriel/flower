@@ -3,6 +3,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   align-items: center;
+  position: relative;
 }
 
 .alignCenter {
@@ -19,24 +20,73 @@
   font-weight: 600;
 }
 
-.pill {
+.dropdown {
+  position: relative;
+}
+
+.trigger {
   display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  padding: 0.35rem;
-  border-radius: 999px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  min-width: 10.5rem;
+  min-height: 2.9rem;
+  padding: 0.7rem 0.95rem 0.7rem 1rem;
   border: 1px solid rgba(79, 106, 81, 0.14);
-  background: rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+  font-size: 0.94rem;
+  font-weight: 600;
   box-shadow: 0 14px 28px rgba(79, 106, 81, 0.06);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.trigger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(79, 106, 81, 0.08);
+}
+
+.trigger[aria-expanded="true"] {
+  border-color: rgba(159, 74, 52, 0.28);
+  box-shadow: 0 20px 38px rgba(79, 106, 81, 0.1);
+}
+
+.chevron {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  transition: transform 180ms ease;
+}
+
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.65rem);
+  display: grid;
+  gap: 0.25rem;
+  min-width: max(100%, 11rem);
+  padding: 0.45rem;
+  border-radius: 22px;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  background: rgba(255, 250, 243, 0.98);
+  box-shadow: 0 24px 44px rgba(79, 106, 81, 0.14);
+  backdrop-filter: blur(10px);
 }
 
 .option {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 2.3rem;
-  padding: 0.55rem 0.95rem;
-  border-radius: 999px;
+  justify-content: flex-start;
+  min-height: 2.6rem;
+  padding: 0.7rem 0.95rem;
+  border-radius: 16px;
   color: var(--text-muted);
   font-size: 0.92rem;
   font-weight: 600;
@@ -67,14 +117,21 @@
     width: 100%;
   }
 
-  .pill {
+  .dropdown {
     width: 100%;
-    justify-content: stretch;
+  }
+
+  .trigger {
+    width: 100%;
+  }
+
+  .menu {
+    left: 0;
+    right: 0;
+    min-width: 0;
   }
 
   .option {
-    flex: 1 1 0;
     min-width: 0;
-    padding-inline: 0.7rem;
   }
 }

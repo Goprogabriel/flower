@@ -15,17 +15,23 @@ export function HeroSection({
   contained = true,
   visualMode = "default"
 }: HeroSectionProps) {
-  const { translations, createLocalizedPath } = useLanguage();
+  const { language, translations, createLocalizedPath } = useLanguage();
   const wrapperClassName = `${styles.wrapper} ${
     visualMode === "mobile-only" ? styles.singleColumnDesktop : ""
+  }`;
+  const titleClassName = `${styles.title} ${
+    language === "da" ? "" : styles.localizedTitle
+  }`;
+  const descriptionClassName = `${styles.description} ${
+    language === "da" ? "" : styles.localizedDescription
   }`;
 
   const content = (
     <div className={wrapperClassName}>
       <div className={styles.copy}>
         <span className="eyebrow">{translations.hero.eyebrow}</span>
-        <h1>{translations.hero.title}</h1>
-        <p>{translations.hero.description}</p>
+        <h1 className={titleClassName}>{translations.hero.title}</h1>
+        <p className={descriptionClassName}>{translations.hero.description}</p>
 
         <div className={styles.actions}>
           <ButtonLink href={createLocalizedPath(buildBouquetPath)} size="large">
