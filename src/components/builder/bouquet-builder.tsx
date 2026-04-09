@@ -122,7 +122,6 @@ export function BouquetBuilder({
   const [flowerSelection, setFlowerSelection] = useState<FlowerSelection>(
     createInitialFlowerSelectionFromIds(flowers, initialFlowerIds)
   );
-  const [shareOrigin, setShareOrigin] = useState("");
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   const selectedBackgrounds = backgrounds.filter((background) =>
@@ -137,9 +136,6 @@ export function BouquetBuilder({
     cardMessage
   });
   const digitalBouquetPath = `/open-buket?${currentDraftQueryString}`;
-  const digitalBouquetUrl = shareOrigin
-    ? `${shareOrigin}${digitalBouquetPath}`
-    : digitalBouquetPath;
 
   const backgroundError =
     selectedBackgrounds.length === 0 ? "Du skal vælge mindst 1 bund." : null;
@@ -150,10 +146,6 @@ export function BouquetBuilder({
         ? `Du kan højst vælge ${MAX_FLOWERS} blomster.`
         : null;
   const isValid = !backgroundError && !flowerError;
-
-  useEffect(() => {
-    setShareOrigin(window.location.origin);
-  }, []);
 
   useEffect(() => {
     const selectedFlowerIds = getSelectedFlowerIds(flowers, flowerSelection);
@@ -239,16 +231,6 @@ export function BouquetBuilder({
   return (
     <section className={`section ${styles.section}`}>
       <div className="container">
-        <div className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <h1>Sammensæt din egen blomsterbuket</h1>
-            <p>
-              Vælg mindst én bund og mellem 6 og 9 blomster. Du må gerne vælge
-              den samme blomst flere gange, så buketten får præcis det udtryk, du ønsker.
-            </p>
-          </div>
-        </div>
-
         <div className={styles.layout}>
           <div className={styles.controls}>
             <section className={styles.card}>
@@ -437,11 +419,6 @@ export function BouquetBuilder({
                   </div>
                 </div>
 
-                <p className={styles.helper}>
-                  Linket aabner en side, hvor kortet foerst folder sig ud, og
-                  buketten derefter kommer frem.
-                </p>
-
                 <div className={styles.digitalBouquetActions}>
                   <Link
                     href={digitalBouquetPath}
@@ -468,27 +445,23 @@ export function BouquetBuilder({
                       ? "Link kopieret"
                       : copyState === "error"
                         ? "Kunne ikke kopiere"
-                        : "Kopier link"}
+                      : "Kopier link"}
                   </button>
                 </div>
-
-                <p className={styles.digitalBouquetUrl}>
-                  {isValid
-                    ? digitalBouquetUrl
-                    : "Faerdiggoer buketten for at faa et delbart link."}
-                </p>
               </div>
             </section>
           </div>
 
-          <BouquetPreview
-            backgrounds={selectedBackgrounds}
-            flowers={selectedFlowers}
-            totalFlowers={totalFlowers}
-            isValid={Boolean(isValid)}
-            cardTitle={cardTitle}
-            cardMessage={cardMessage}
-          />
+          <div className={styles.previewPanel}>
+            <BouquetPreview
+              backgrounds={selectedBackgrounds}
+              flowers={selectedFlowers}
+              totalFlowers={totalFlowers}
+              isValid={Boolean(isValid)}
+              cardTitle={cardTitle}
+              cardMessage={cardMessage}
+            />
+          </div>
         </div>
       </div>
     </section>

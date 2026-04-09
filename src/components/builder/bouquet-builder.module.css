@@ -2,32 +2,6 @@
   padding-top: 2rem;
 }
 
-.hero {
-  display: block;
-  margin-bottom: 2rem;
-}
-
-.heroCopy {
-  display: grid;
-  gap: 1rem;
-  max-width: 720px;
-}
-
-.heroCopy h1 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: clamp(2.8rem, 5vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
-}
-
-.heroCopy p {
-  margin: 0;
-  font-size: 1.06rem;
-  line-height: 1.75;
-  color: var(--text-muted);
-}
-
 .completeButton {
   min-height: 3.4rem;
   padding: 0.85rem 1.35rem;
@@ -45,6 +19,12 @@
 .controls {
   display: grid;
   gap: 1.2rem;
+}
+
+.previewPanel {
+  position: sticky;
+  top: 1.5rem;
+  align-self: start;
 }
 
 .card,
@@ -308,7 +288,7 @@
 
 .digitalBouquetCard {
   display: grid;
-  gap: 1rem;
+  gap: 0.95rem;
   width: 100%;
   padding: 1.15rem;
   border-radius: 24px;
@@ -367,29 +347,17 @@
   box-shadow: none;
 }
 
-.digitalBouquetUrl {
-  margin: 0;
-  padding: 0.9rem 1rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(79, 106, 81, 0.1);
-  color: var(--text-muted);
-  font-size: 0.92rem;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
-}
-
 @media (max-width: 1120px) {
   .layout {
     grid-template-columns: 1fr;
   }
+
+  .previewPanel {
+    position: static;
+  }
 }
 
 @media (max-width: 860px) {
-  .hero {
-    margin-bottom: 1.5rem;
-  }
-
   .summaryStats {
     grid-template-columns: 1fr;
   }

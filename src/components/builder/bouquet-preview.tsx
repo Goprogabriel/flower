@@ -192,7 +192,10 @@ export function BouquetPreview({
 
       {showMessagePreview ? (
         <div className={styles.messagePreview}>
-          <span className={styles.messageKicker}>Brev</span>
+          <div className={styles.messageHeader}>
+            <span className={styles.messageKicker}>Kort</span>
+            <span className={styles.messageBadge}>Personlig hilsen</span>
+          </div>
           <div className={styles.letter}>
             <div className={styles.letterPaper}>
               <span className={styles.letterTitle}>{cardTitle.trim() || "Til dig"}</span>
