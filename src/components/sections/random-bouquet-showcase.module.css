@@ -1,0 +1,40 @@
+.wrapper {
+  display: grid;
+  gap: 1rem;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.regenerateButton,
+.orderButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.regenerateButton {
+  border: 1px solid rgba(79, 106, 81, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--text);
+}
+
+.orderButton {
+  border: 0;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: white;
+  box-shadow: 0 18px 34px rgba(159, 74, 52, 0.2);
+}
+
+@media (max-width: 720px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}

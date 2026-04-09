@@ -1,0 +1,196 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  background: rgba(255, 252, 247, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.kicker {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panelHeader strong {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  letter-spacing: -0.04em;
+}
+
+.canvas {
+  position: relative;
+  padding: 1.15rem;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 248, 241, 0.76)),
+    radial-gradient(circle at top, rgba(255, 218, 188, 0.32), transparent 50%);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.canvasGlow {
+  position: absolute;
+  inset: auto 8% -12% auto;
+  width: 180px;
+  height: 180px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(190, 104, 77, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.canvasStage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  min-height: 420px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 230, 205, 0.78), transparent 28%),
+    linear-gradient(180deg, rgba(255, 248, 241, 0.84), rgba(250, 238, 224, 0.62));
+  overflow: hidden;
+}
+
+.backgroundLayer,
+.flowerLayer {
+  position: absolute;
+}
+
+.assetImage {
+  object-fit: contain;
+}
+
+.emptyState {
+  position: absolute;
+  inset: auto 1.5rem 1.5rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: rgba(255, 251, 246, 0.9);
+  color: var(--text-muted);
+  z-index: 20;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statusCard {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  background: rgba(255, 251, 246, 0.78);
+}
+
+.statusCard span {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.statusCard strong {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+
+.messagePreview {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.messageKicker {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.letter {
+  position: relative;
+  padding-top: 0.8rem;
+}
+
+.letter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: linear-gradient(135deg, #f4e3cf 50%, #ead0b5 50%);
+  border-top-right-radius: 6px;
+  transform: rotate(45deg);
+}
+
+.letterPaper {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.4rem 1.2rem 1.2rem;
+  border-radius: 18px;
+  border: 1px solid rgba(177, 148, 112, 0.22);
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.94) 0,
+      rgba(255, 255, 255, 0.94) 1.8rem,
+      rgba(224, 205, 180, 0.4) 1.8rem,
+      rgba(224, 205, 180, 0.4) 1.86rem
+    ),
+    linear-gradient(180deg, rgba(251, 244, 233, 0.98), rgba(245, 232, 214, 0.94));
+  box-shadow: 0 16px 34px rgba(84, 67, 46, 0.05);
+}
+
+.letterTitle {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.letterPaper p {
+  margin: 0;
+  color: rgba(54, 58, 52, 0.9);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.letterSignature {
+  padding-top: 0.35rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+@media (max-width: 960px) {
+  .canvasStage {
+    min-height: 380px;
+  }
+}
+
+@media (max-width: 720px) {
+  .canvas {
+    padding: 0.85rem;
+    border-radius: 28px;
+  }
+
+  .canvasStage {
+    min-height: 320px;
+  }
+
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+}

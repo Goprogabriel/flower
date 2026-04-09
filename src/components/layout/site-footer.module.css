@@ -1,0 +1,28 @@
+.footer {
+  padding: 0 0 2rem;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 1.6rem;
+  border-radius: 26px;
+  background: rgba(255, 250, 243, 0.78);
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.inner p {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

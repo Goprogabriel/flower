@@ -1,0 +1,37 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 3.4rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 999px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.large {
+  min-height: 4rem;
+  padding: 1rem 1.75rem;
+  font-size: 1rem;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: white;
+  box-shadow: 0 18px 34px rgba(159, 74, 52, 0.2);
+}
+
+.secondary {
+  border: 1px solid rgba(79, 106, 81, 0.15);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+}

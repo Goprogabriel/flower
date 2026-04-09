@@ -1,0 +1,345 @@
+.section {
+  padding-top: 2rem;
+}
+
+.hero {
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.heroCopy {
+  display: grid;
+  gap: 1rem;
+  max-width: 720px;
+}
+
+.heroCopy h1 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.heroCopy p {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.completeButton {
+  min-height: 3.4rem;
+  padding: 0.85rem 1.35rem;
+  border: 0;
+  border-radius: 999px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.85fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.controls {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.card,
+.summaryCard {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  border-radius: 30px;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 250, 244, 0.74)),
+    rgba(255, 255, 255, 0.5);
+  box-shadow: 0 22px 48px rgba(84, 67, 46, 0.06);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.cardHeader h2,
+.summaryCard h2 {
+  margin: 0.25rem 0 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.cardHeader strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.step {
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.helper {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.messageForm {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.fieldLabel {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1px solid rgba(79, 106, 81, 0.14);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text);
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: 2px solid rgba(190, 104, 77, 0.22);
+  border-color: rgba(190, 104, 77, 0.35);
+}
+
+.backgroundGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.backgroundCard {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 252, 247, 0.72);
+  text-align: left;
+  min-width: 0;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.backgroundCard:hover,
+.flowerCard:hover {
+  transform: translateY(-1px);
+}
+
+.selected {
+  border-color: rgba(190, 104, 77, 0.4);
+  box-shadow: 0 16px 30px rgba(190, 104, 77, 0.12);
+}
+
+.backgroundThumb,
+.flowerThumb {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 232, 212, 0.78), transparent 32%),
+    linear-gradient(180deg, rgba(255, 248, 241, 0.92), rgba(247, 236, 223, 0.86));
+  overflow: hidden;
+}
+
+.backgroundThumb {
+  aspect-ratio: 1 / 1;
+}
+
+.flowerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.flowerCard {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  border-radius: 24px;
+  background: rgba(255, 252, 247, 0.78);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.flowerThumb {
+  aspect-ratio: 1 / 1;
+}
+
+.assetImage {
+  object-fit: contain;
+}
+
+.flowerBody {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.flowerMeta {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.flowerMeta strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.flowerMeta span {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.quantityControls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(79, 106, 81, 0.12);
+}
+
+.quantityButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(190, 104, 77, 0.12);
+  color: var(--accent-strong);
+  font-size: 1.2rem;
+}
+
+.quantityButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.quantityValue {
+  min-width: 1.4rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.error {
+  margin: 0;
+  color: #9f4a34;
+  font-weight: 600;
+}
+
+.summaryCard {
+  align-items: flex-start;
+}
+
+.summaryStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.summaryStats div {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  background: rgba(255, 252, 247, 0.74);
+  border: 1px solid rgba(79, 106, 81, 0.12);
+}
+
+.summaryStats span {
+  color: var(--text-muted);
+}
+
+.summaryStats strong {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+
+.completeButton {
+  width: 100%;
+  background: rgba(213, 218, 208, 0.72);
+  color: rgba(38, 51, 38, 0.6);
+}
+
+.completeButtonReady {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  color: white;
+  box-shadow: 0 18px 34px rgba(159, 74, 52, 0.2);
+}
+
+@media (max-width: 1120px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    margin-bottom: 1.5rem;
+  }
+
+  .summaryStats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    padding-top: 1rem;
+  }
+
+  .card,
+  .summaryCard {
+    padding: 1.1rem;
+    border-radius: 24px;
+  }
+
+  .backgroundCard,
+  .flowerCard {
+    padding: 0.85rem;
+    border-radius: 20px;
+  }
+
+  .flowerCard {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+}
