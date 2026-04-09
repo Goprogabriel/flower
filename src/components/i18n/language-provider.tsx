@@ -28,12 +28,30 @@ type LanguageContextValue = {
 
 const defaultTranslations = getTranslations(defaultLanguage);
 
+function getFallbackLocation() {
+  if (typeof window === "undefined") {
+    return {
+      pathname: "/",
+      search: ""
+    };
+  }
+
+  return {
+    pathname: window.location.pathname,
+    search: window.location.search
+  };
+}
+
 const defaultValue: LanguageContextValue = {
   language: defaultLanguage,
   translations: defaultTranslations,
   createLocalizedPath: (path, queryString) =>
     createLocalizedPath(path, defaultLanguage, queryString),
-  createLanguageSwitchPath: (language) => createLocalizedPath("/", language),
+  createLanguageSwitchPath: (language) => {
+    const location = getFallbackLocation();
+
+    return createLocalizedPath(location.pathname, language, location.search);
+  },
   localizeLabel: (label) => localizeAssetLabel(label, defaultLanguage)
 };
 
