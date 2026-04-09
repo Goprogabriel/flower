@@ -1,6 +1,7 @@
 import type { BouquetAsset, BouquetDraft } from "@/types/bouquet";
 
 const DEFAULT_CARD_TITLE = "Til dig";
+const BASE64_PREFIX = "b64:";
 const CARD_MESSAGES = [
   "Jeg har plukket denne buket til dig.",
   "En lille buket til en, jeg holder af.",
@@ -81,13 +82,59 @@ function asArray(value: string | string[] | undefined) {
   return Array.isArray(value) ? value : [value];
 }
 
+function encodeBase64(value: string) {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+
+  return btoa(binary);
+}
+
+function decodeBase64(value: string) {
+  const binary = atob(value);
+  const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+
+  return new TextDecoder().decode(bytes);
+}
+
+function encodeCardField(value: string) {
+  return `${BASE64_PREFIX}${encodeBase64(value)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/u, "")}`;
+}
+
+function decodeCardField(value: string | undefined) {
+  if (!value?.startsWith(BASE64_PREFIX)) {
+    return value;
+  }
+
+  const normalizedValue = value
+    .slice(BASE64_PREFIX.length)
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+  const paddedValue = normalizedValue.padEnd(
+    Math.ceil(normalizedValue.length / 4) * 4,
+    "="
+  );
+
+  try {
+    return decodeBase64(paddedValue);
+  } catch {
+    return value;
+  }
+}
+
 export function parseBouquetDraftFromSearchParams(searchParams: {
   [key: string]: string | string[] | undefined;
 }): Partial<BouquetDraft> {
   const backgroundIds = asArray(searchParams.background);
   const flowerIds = asArray(searchParams.flower);
-  const cardTitle = asArray(searchParams.cardTitle)[0];
-  const cardMessage = asArray(searchParams.cardMessage)[0];
+  const cardTitle = decodeCardField(asArray(searchParams.cardTitle)[0]);
+  const cardMessage = decodeCardField(asArray(searchParams.cardMessage)[0]);
 
   return {
     backgroundIds,
@@ -103,8 +150,8 @@ export function parseBouquetDraftFromUrlSearchParams(searchParams: {
 }): Partial<BouquetDraft> {
   const backgroundIds = searchParams.getAll("background");
   const flowerIds = searchParams.getAll("flower");
-  const cardTitle = searchParams.get("cardTitle") ?? undefined;
-  const cardMessage = searchParams.get("cardMessage") ?? undefined;
+  const cardTitle = decodeCardField(searchParams.get("cardTitle") ?? undefined);
+  const cardMessage = decodeCardField(searchParams.get("cardMessage") ?? undefined);
 
   return {
     backgroundIds,
@@ -125,8 +172,8 @@ export function createBouquetDraftQueryString(draft: BouquetDraft) {
     params.append("flower", flowerId);
   });
 
-  params.set("cardTitle", draft.cardTitle);
-  params.set("cardMessage", draft.cardMessage);
+  params.set("cardTitle", encodeCardField(draft.cardTitle));
+  params.set("cardMessage", encodeCardField(draft.cardMessage));
 
   return params.toString();
 }

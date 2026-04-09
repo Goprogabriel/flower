@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   createBouquetDraftQueryString,
@@ -68,10 +68,25 @@ function OpenBouquetPageContent({
     () => resolveFlowers(flowers, draft.flowerIds),
     [draft.flowerIds, flowers]
   );
+  const currentDraftQueryString = createBouquetDraftQueryString(draft);
   const builderPath = createPathWithQuery(
     buildBouquetPath,
-    createBouquetDraftQueryString(draft)
+    currentDraftQueryString
   );
+
+  useEffect(() => {
+    const nextSearch = currentDraftQueryString ? `?${currentDraftQueryString}` : "";
+
+    if (window.location.search === nextSearch) {
+      return;
+    }
+
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${nextSearch}${window.location.hash}`
+    );
+  }, [currentDraftQueryString]);
 
   return (
     <OpenBouquetExperience
