@@ -61,7 +61,7 @@ function OpenBouquetPageContent({
   backgrounds,
   flowers
 }: OpenBouquetPageProps) {
-  const { language, createLocalizedPath } = useLanguage();
+  const { language } = useLanguage();
   const searchParams = useSearchParams();
   const fallbackDraft = useMemo(
     () => createRandomBouquetDraft(backgrounds, flowers, language),
@@ -83,6 +83,7 @@ function OpenBouquetPageContent({
   const currentDraftQueryString = createBouquetDraftQueryString(draft);
   const builderPath = createLocalizedPath(
     buildBouquetPath,
+    language,
     currentDraftQueryString
   );
 
