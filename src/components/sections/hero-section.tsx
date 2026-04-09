@@ -1,4 +1,5 @@
 import { bouquetDetails } from "@/content/landing-page";
+import { buildBouquetPath } from "@/lib/site-paths";
 import { ButtonLink } from "@/components/ui/button-link";
 import { BouquetShowcase } from "./bouquet-showcase";
 import styles from "./hero-section.module.css";
@@ -24,7 +25,7 @@ export function HeroSection({
         <p>Vælg bund, blomster og kort, og sammensæt en personlig buket på få minutter.</p>
 
         <div className={styles.actions}>
-          <ButtonLink href="/byg-buket" size="large">
+          <ButtonLink href={buildBouquetPath} size="large">
             Byg din egen buket
           </ButtonLink>
         </div>

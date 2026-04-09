@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { BouquetPreview } from "@/components/builder/bouquet-preview";
 import { createBouquetDraftQueryString, createRandomBouquetDraft } from "@/lib/bouquet-draft";
+import { buildBouquetPath, createPathWithQuery } from "@/lib/site-paths";
 import type { BouquetAsset, BouquetDraft } from "@/types/bouquet";
 import styles from "./random-bouquet-showcase.module.css";
 
@@ -49,7 +50,10 @@ export function RandomBouquetShowcase({
           Ny buket
         </button>
         <Link
-          href={`/byg-buket?${createBouquetDraftQueryString(draft)}`}
+          href={createPathWithQuery(
+            buildBouquetPath,
+            createBouquetDraftQueryString(draft)
+          )}
           className={styles.orderButton}
         >
           Tilpas buketten

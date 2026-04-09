@@ -8,6 +8,11 @@ import {
   defaultBouquetCardMessage,
   defaultBouquetCardTitle
 } from "@/lib/bouquet-draft";
+import {
+  createAbsoluteShareUrl,
+  createPathWithQuery,
+  openBouquetPath
+} from "@/lib/site-paths";
 import type { BouquetAsset } from "@/types/bouquet";
 import { BouquetPreview } from "./bouquet-preview";
 import styles from "./bouquet-builder.module.css";
@@ -135,7 +140,10 @@ export function BouquetBuilder({
     cardTitle,
     cardMessage
   });
-  const digitalBouquetPath = `/open-buket?${currentDraftQueryString}`;
+  const digitalBouquetPath = createPathWithQuery(
+    openBouquetPath,
+    currentDraftQueryString
+  );
 
   const backgroundError =
     selectedBackgrounds.length === 0 ? "Du skal vælge mindst 1 bund." : null;
@@ -219,9 +227,7 @@ export function BouquetBuilder({
     }
 
     try {
-      await navigator.clipboard.writeText(
-        `${window.location.origin}${digitalBouquetPath}`
-      );
+      await navigator.clipboard.writeText(createAbsoluteShareUrl(digitalBouquetPath));
       setCopyState("copied");
     } catch {
       setCopyState("error");

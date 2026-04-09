@@ -97,6 +97,23 @@ export function parseBouquetDraftFromSearchParams(searchParams: {
   };
 }
 
+export function parseBouquetDraftFromUrlSearchParams(searchParams: {
+  getAll: (name: string) => string[];
+  get: (name: string) => string | null;
+}): Partial<BouquetDraft> {
+  const backgroundIds = searchParams.getAll("background");
+  const flowerIds = searchParams.getAll("flower");
+  const cardTitle = searchParams.get("cardTitle") ?? undefined;
+  const cardMessage = searchParams.get("cardMessage") ?? undefined;
+
+  return {
+    backgroundIds,
+    flowerIds,
+    cardTitle,
+    cardMessage
+  };
+}
+
 export function createBouquetDraftQueryString(draft: BouquetDraft) {
   const params = new URLSearchParams();
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildBouquetPath } from "@/lib/site-paths";
 import styles from "./site-header.module.css";
 
 export function SiteHeader() {
@@ -10,7 +11,7 @@ export function SiteHeader() {
           <span className={styles.brandText}>Atelier</span>
         </Link>
         <nav className={styles.nav} aria-label="Primær navigation">
-          <Link href="/byg-buket" className={styles.navCta}>
+          <Link href={buildBouquetPath} className={styles.navCta}>
             Byg din egen buket
           </Link>
         </nav>
