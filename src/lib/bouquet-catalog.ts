@@ -1,5 +1,6 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
+import { withBasePath } from "@/lib/site-paths";
 import type { BouquetAsset } from "@/types/bouquet";
 
 const ASSET_ROOT = path.join(process.cwd(), "public", "assets");
@@ -52,7 +53,7 @@ async function readAssetDirectory(
     return {
       id: `${directory}-${filename.replace(/\.[^.]+$/, "")}`,
       label,
-      src: `/assets/${directory}/${filename}`
+      src: withBasePath(`/assets/${directory}/${filename}`)
     };
   });
 }
