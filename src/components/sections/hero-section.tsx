@@ -17,7 +17,7 @@ export function HeroSection({
 }: HeroSectionProps) {
   const { language, translations, createLocalizedPath } = useLanguage();
   const wrapperClassName = `${styles.wrapper} ${
-    visualMode === "mobile-only" ? styles.singleColumnDesktop : ""
+    visualMode !== "default" ? styles.singleColumnDesktop : ""
   }`;
   const titleClassName = `${styles.title} ${
     language === "da" ? "" : styles.localizedTitle
