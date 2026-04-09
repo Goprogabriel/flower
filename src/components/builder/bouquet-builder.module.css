@@ -306,6 +306,79 @@
   box-shadow: 0 18px 34px rgba(159, 74, 52, 0.2);
 }
 
+.digitalBouquetCard {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  padding: 1.15rem;
+  border-radius: 24px;
+  border: 1px solid rgba(79, 106, 81, 0.12);
+  background: rgba(255, 252, 247, 0.76);
+}
+
+.digitalBouquetHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.digitalBouquetHeader h3 {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.7rem;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.digitalBouquetActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.digitalBouquetLink,
+.digitalBouquetCopy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.3rem;
+  padding: 0.85rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.digitalBouquetLink {
+  background: linear-gradient(135deg, rgba(79, 106, 81, 0.96), rgba(53, 74, 56, 0.98));
+  color: white;
+  box-shadow: 0 16px 28px rgba(53, 74, 56, 0.18);
+}
+
+.digitalBouquetCopy {
+  border: 1px solid rgba(79, 106, 81, 0.14);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--text);
+}
+
+.digitalBouquetLinkDisabled,
+.digitalBouquetCopy:disabled {
+  pointer-events: none;
+  opacity: 0.48;
+  box-shadow: none;
+}
+
+.digitalBouquetUrl {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(79, 106, 81, 0.1);
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 1120px) {
   .layout {
     grid-template-columns: 1fr;
@@ -341,5 +414,9 @@
 
   .flowerCard {
     grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .digitalBouquetActions {
+    grid-template-columns: 1fr;
   }
 }

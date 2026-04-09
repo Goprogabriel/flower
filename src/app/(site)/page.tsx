@@ -1,4 +1,4 @@
-import styles from "./page.module.css";
+import styles from "../page.module.css";
 import { getBouquetCatalog } from "@/lib/bouquet-catalog";
 import { createRandomBouquetDraft } from "@/lib/bouquet-draft";
 import { HeroSection } from "@/components/sections/hero-section";
@@ -9,9 +9,9 @@ export default async function HomePage() {
   const initialDraft = createRandomBouquetDraft(backgrounds, flowers);
 
   return (
-    <div className={`container ${styles.homeShell}`}>
+    <div className={styles.homeShell}>
       <div className={styles.contentColumn}>
-        <HeroSection contained={false} visualMode="mobile-only" />
+        <HeroSection contained={false} visualMode="hidden" />
       </div>
       <div className={styles.previewColumn}>
         <RandomBouquetShowcase

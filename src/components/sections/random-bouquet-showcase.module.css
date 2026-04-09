@@ -1,6 +1,14 @@
 .wrapper {
   display: grid;
   gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(180deg, rgba(255, 252, 246, 0.74), rgba(255, 247, 239, 0.64)),
+    radial-gradient(circle at top, rgba(255, 220, 194, 0.24), transparent 52%);
+  box-shadow: 0 28px 64px rgba(91, 67, 36, 0.08);
+  backdrop-filter: blur(16px);
 }
 
 .actions {
@@ -34,6 +42,14 @@
 }
 
 @media (max-width: 720px) {
+  .wrapper {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
   .actions {
     grid-template-columns: 1fr;
   }

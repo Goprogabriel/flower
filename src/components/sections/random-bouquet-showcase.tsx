@@ -41,17 +41,18 @@ export function RandomBouquetShowcase({
         cardTitle={draft.cardTitle}
         cardMessage={draft.cardMessage}
         showHeader={false}
+        showMessagePreview={false}
       />
 
       <div className={styles.actions}>
         <button type="button" className={styles.regenerateButton} onClick={regenerateDraft}>
-          Generer ny buket
+          Ny buket
         </button>
         <Link
           href={`/byg-buket?${createBouquetDraftQueryString(draft)}`}
           className={styles.orderButton}
         >
-          Bestil
+          Tilpas buketten
         </Link>
       </div>
     </div>

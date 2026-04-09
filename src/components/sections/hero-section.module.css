@@ -10,6 +10,7 @@
 .singleColumnDesktop {
   grid-template-columns: minmax(0, 1fr);
   max-width: 760px;
+  padding-top: 0.85rem;
 }
 
 .copy {
@@ -74,6 +75,10 @@
   line-height: 1.45;
 }
 
+.singleColumnDesktop .copy p {
+  max-width: 34ch;
+}
+
 @media (max-width: 1040px) {
   .wrapper {
     grid-template-columns: 1fr;
@@ -81,6 +86,7 @@
 
   .singleColumnDesktop {
     max-width: none;
+    padding-top: 1.2rem;
   }
 
   .copy h1 {

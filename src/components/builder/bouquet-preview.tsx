@@ -11,6 +11,7 @@ type BouquetPreviewProps = {
   cardTitle: string;
   cardMessage: string;
   showHeader?: boolean;
+  showMessagePreview?: boolean;
 };
 
 const backgroundSlots: CSSProperties[] = [
@@ -122,7 +123,8 @@ export function BouquetPreview({
   isValid,
   cardTitle,
   cardMessage,
-  showHeader = true
+  showHeader = true,
+  showMessagePreview = true
 }: BouquetPreviewProps) {
   return (
     <aside className={styles.panel}>
@@ -188,16 +190,18 @@ export function BouquetPreview({
         </div>
       </div>
 
-      <div className={styles.messagePreview}>
-        <span className={styles.messageKicker}>Brev</span>
-        <div className={styles.letter}>
-          <div className={styles.letterPaper}>
-            <span className={styles.letterTitle}>{cardTitle.trim() || "Til dig"}</span>
-            <p>{cardMessage.trim() || "Skriv en lille hilsen til kortet."}</p>
-            <span className={styles.letterSignature}>Med varme tanker</span>
+      {showMessagePreview ? (
+        <div className={styles.messagePreview}>
+          <span className={styles.messageKicker}>Brev</span>
+          <div className={styles.letter}>
+            <div className={styles.letterPaper}>
+              <span className={styles.letterTitle}>{cardTitle.trim() || "Til dig"}</span>
+              <p>{cardMessage.trim() || "Skriv en lille hilsen til kortet."}</p>
+              <span className={styles.letterSignature}>Med varme tanker</span>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </aside>
   );
 }

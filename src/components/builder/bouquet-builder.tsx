@@ -1,8 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
+  createBouquetDraftQueryString,
   defaultBouquetCardMessage,
   defaultBouquetCardTitle
 } from "@/lib/bouquet-draft";
@@ -90,6 +92,12 @@ function getSelectedFlowers(flowers: BouquetAsset[], selection: FlowerSelection)
   );
 }
 
+function getSelectedFlowerIds(flowers: BouquetAsset[], selection: FlowerSelection) {
+  return flowers.flatMap((flower) =>
+    Array.from({ length: selection[flower.id] ?? 0 }, () => flower.id)
+  );
+}
+
 function getTotalFlowers(selection: FlowerSelection) {
   return Object.values(selection).reduce((total, amount) => total + amount, 0);
 }
@@ -114,12 +122,24 @@ export function BouquetBuilder({
   const [flowerSelection, setFlowerSelection] = useState<FlowerSelection>(
     createInitialFlowerSelectionFromIds(flowers, initialFlowerIds)
   );
+  const [shareOrigin, setShareOrigin] = useState("");
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   const selectedBackgrounds = backgrounds.filter((background) =>
     selectedBackgroundIds.includes(background.id)
   );
   const selectedFlowers = getSelectedFlowers(flowers, flowerSelection);
   const totalFlowers = selectedFlowers.length;
+  const currentDraftQueryString = createBouquetDraftQueryString({
+    backgroundIds: selectedBackgroundIds,
+    flowerIds: getSelectedFlowerIds(flowers, flowerSelection),
+    cardTitle,
+    cardMessage
+  });
+  const digitalBouquetPath = `/open-buket?${currentDraftQueryString}`;
+  const digitalBouquetUrl = shareOrigin
+    ? `${shareOrigin}${digitalBouquetPath}`
+    : digitalBouquetPath;
 
   const backgroundError =
     selectedBackgrounds.length === 0 ? "Du skal vælge mindst 1 bund." : null;
@@ -130,6 +150,42 @@ export function BouquetBuilder({
         ? `Du kan højst vælge ${MAX_FLOWERS} blomster.`
         : null;
   const isValid = !backgroundError && !flowerError;
+
+  useEffect(() => {
+    setShareOrigin(window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    const selectedFlowerIds = getSelectedFlowerIds(flowers, flowerSelection);
+    const queryString = createBouquetDraftQueryString({
+      backgroundIds: selectedBackgroundIds,
+      flowerIds: selectedFlowerIds,
+      cardTitle,
+      cardMessage
+    });
+    const nextSearch = queryString ? `?${queryString}` : "";
+
+    if (window.location.search === nextSearch) {
+      return;
+    }
+
+    // Keep the current bouquet shareable without triggering a full app navigation.
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${nextSearch}${window.location.hash}`
+    );
+  }, [cardMessage, cardTitle, flowerSelection, flowers, selectedBackgroundIds]);
+
+  useEffect(() => {
+    if (copyState === "idle") {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => setCopyState("idle"), 2200);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [copyState]);
 
   function toggleBackground(backgroundId: string) {
     setSelectedBackgroundIds((current) =>
@@ -163,6 +219,21 @@ export function BouquetBuilder({
 
       return nextSelection;
     });
+  }
+
+  async function copyDigitalBouquetLink() {
+    if (!isValid) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        `${window.location.origin}${digitalBouquetPath}`
+      );
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    }
   }
 
   return (
@@ -357,6 +428,56 @@ export function BouquetBuilder({
               >
                 {isValid ? "Klar buket" : "Færdiggør valgene"}
               </button>
+
+              <div className={styles.digitalBouquetCard}>
+                <div className={styles.digitalBouquetHeader}>
+                  <div>
+                    <span className={styles.step}>Digital buket</span>
+                    <h3>Del kortet og buketten med animation</h3>
+                  </div>
+                </div>
+
+                <p className={styles.helper}>
+                  Linket aabner en side, hvor kortet foerst folder sig ud, og
+                  buketten derefter kommer frem.
+                </p>
+
+                <div className={styles.digitalBouquetActions}>
+                  <Link
+                    href={digitalBouquetPath}
+                    className={`${styles.digitalBouquetLink} ${
+                      !isValid ? styles.digitalBouquetLinkDisabled : ""
+                    }`}
+                    aria-disabled={!isValid}
+                    onClick={(event) => {
+                      if (!isValid) {
+                        event.preventDefault();
+                      }
+                    }}
+                  >
+                    Aabn digital buket
+                  </Link>
+
+                  <button
+                    type="button"
+                    className={styles.digitalBouquetCopy}
+                    onClick={copyDigitalBouquetLink}
+                    disabled={!isValid}
+                  >
+                    {copyState === "copied"
+                      ? "Link kopieret"
+                      : copyState === "error"
+                        ? "Kunne ikke kopiere"
+                        : "Kopier link"}
+                  </button>
+                </div>
+
+                <p className={styles.digitalBouquetUrl}>
+                  {isValid
+                    ? digitalBouquetUrl
+                    : "Faerdiggoer buketten for at faa et delbart link."}
+                </p>
+              </div>
             </section>
           </div>
 
